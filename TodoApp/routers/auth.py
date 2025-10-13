@@ -7,15 +7,15 @@ router = APIRouter()
 
 
 class CreateUserRequest(BaseModel):
-    email = str
-    username = str
-    first_name = str
-    last_name = str
-    role = str
-    password = str
+    email : str
+    username : str
+    first_name: str
+    last_name : str
+    role : str
+    password : str
 
 
-@router.get('/auth')
+@router.post('/auth')
 async def create_user(create_user_request: CreateUserRequest):
     create_user_model = Users(
         email=create_user_request.email,

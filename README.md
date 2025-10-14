@@ -24,7 +24,9 @@ Before you begin, make sure you have installed:
 2.  **Install dependencies:**
     Run `poetry install`. It will automatically create a virtual environment in the project directory and install all required packages from `pyproject.toml`.
     ```bash
-    poetry install
+    pip install -r requirements.txt
+    python -m pip install --upgrade pip
+    pip freeze > requirements.txt
     ```
 
 ## 🏃 Running the Application

@@ -1,5 +1,5 @@
 # FastAPI: The Complete Course
-
+https://github.com/SiarhKul/fastapi-the-complete-course/tree/Project3
 This is the repository for the learning project "FastAPI: The Complete Course".
 
 ## 🚀 Getting Started

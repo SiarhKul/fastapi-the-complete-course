@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 from typing import Annotated
+
+from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from fastapi import Depends
@@ -48,3 +50,20 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     db.refresh(create_user_model)
 
     return create_user_model
+
+
+def authenticate_user(username: str, password: str, db):
+    user = db.query(Users).filter(Users.username == username).first()
+    if not user:
+        return False
+    if not bcrypt_context.verify(password, user.hashed_password):
+        return False
+    return user
+
+@router.post("/token")
+async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+                                 db: db_dependency):
+    user = authenticate_user(form_data.username, form_data.password, db)
+
+
+    return {'access_token': user, 'token_type': 'bearer'}

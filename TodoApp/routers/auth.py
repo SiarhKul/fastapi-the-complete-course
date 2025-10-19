@@ -1,3 +1,6 @@
+import datetime
+from datetime import datetime, timedelta, timezone
+
 from fastapi import APIRouter
 from typing import Annotated
 
@@ -9,9 +12,13 @@ from models import Users
 from passlib.context import CryptContext
 from database import SessionLocal
 from starlette import status
+from jose import jwt
 
 router = APIRouter()
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
+
+SECRET_KEY='12345'
+ALGORITHM="HS256"
 
 
 def get_db():
@@ -33,6 +40,10 @@ class CreateUserRequest(BaseModel):
     password: str
 
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
 @router.post('/auth', status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
     create_user_model = Users(
@@ -51,6 +62,27 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
 
     return create_user_model
 
+@router.post("/token", response_model=Token)
+async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+                                 db: db_dependency):
+    user = authenticate_user(form_data.username, form_data.password, db)
+
+    if not user:
+        return "User not found"
+
+    token = create_access_token(user.username, user.id, timedelta(minutes=20))
+
+    return {'access_token': token, 'token_type': 'bearer'}
+
+# ******************* helpers ***************************
+
+def create_access_token(username: str, user_id: int, expires_delta: timedelta):
+    encode = {'sub': username, 'id': user_id}
+    expires = datetime.now(timezone.utc) + expires_delta
+    encode.update({'exp': expires})
+
+    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
+
 
 def authenticate_user(username: str, password: str, db):
     user = db.query(Users).filter(Users.username == username).first()
@@ -60,10 +92,3 @@ def authenticate_user(username: str, password: str, db):
         return False
     return user
 
-@router.post("/token")
-async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-                                 db: db_dependency):
-    user = authenticate_user(form_data.username, form_data.password, db)
-
-
-    return {'access_token': user, 'token_type': 'bearer'}

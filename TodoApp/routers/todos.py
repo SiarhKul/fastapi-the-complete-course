@@ -39,8 +39,16 @@ async def read_all(user: user_dependency, db: db_dependency):
     return db.query(Todos).filter(Todos.owner_id == user.get('id')).all()
 
 @router.get('/todo/{todo_id}', status_code=200)
-async def read_todo(db: db_dependency, todo_id: int = Path(gt=0)):
-    todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
+async def read_todo(user: user_dependency, db: db_dependency, todo_id: int = Path(gt=0)):
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail='Authentication Failed')
+
+    todo_model = (db.query(Todos)
+                  .filter(Todos.owner_id==user.get('id'))
+                  .filter(Todos.id == todo_id)
+                  .first()
+                  )
+
     if todo_model is not None:
         return todo_model
     raise HTTPException(status_code=404, detail='Todo not found')
@@ -53,8 +61,6 @@ async def create_todo(user: user_dependency, db: db_dependency, todo_request: To
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail='Authentication Failed')
 
     todo_model = Todos(**todo_request.model_dump())
-
-
 
     db.add(todo_model)
     db.commit()

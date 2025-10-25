@@ -78,6 +78,9 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 
     return {'access_token': token, 'token_type': 'bearer'}
 
+
+
+
 # ******************* helpers ***************************
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):

@@ -1,0 +1,14 @@
+
+services:
+    db-webkit:
+        image: postgres:16-alpine
+        container_name: db-todo-app-course-container
+        restart: always
+        environment:
+            POSTGRES_USER: 'user'
+            POSTGRES_PASSWORD: 'password'
+            POSTGRES_DB: 'db-todo-app-course-'
+        ports:
+            - '5435:5432'
+        volumes:
+            - ./postgres-data:/var/lib/postgresql/data

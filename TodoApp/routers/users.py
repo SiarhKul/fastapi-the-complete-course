@@ -32,6 +32,10 @@ class UserVerification(BaseModel):
     password: str
     new_password: str = Field(min_length=4)
 
+class UserData(BaseModel):
+    username: str
+    id: int
+    user_role: str
 
 @router.get('/', status_code=status.HTTP_200_OK)
 async def get_user(user: user_dependency, db: db_dependency):

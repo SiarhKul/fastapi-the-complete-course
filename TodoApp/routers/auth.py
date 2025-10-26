@@ -14,6 +14,7 @@ from passlib.context import CryptContext
 from database import SessionLocal
 from starlette import status
 from jose import jwt, JWTError
+from users import UserData
 
 router = APIRouter(
     prefix='/auth',
@@ -83,7 +84,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 
 # ******************* helpers ***************************
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
+async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)])->UserData:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username:str = payload.get('sub')
@@ -92,7 +93,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
 
         if username is None or user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate user")
-        return {'username': username, 'id': user_id,'user_role':user_role}
+        return UserData(username=username, id=user_id, user_role=user_role)
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate user")
 

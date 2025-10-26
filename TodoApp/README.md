@@ -65,3 +65,86 @@ Before you begin, make sure you have installed:
     ```bash
     black .
     ```
+
+## 🗄️ Database migrations (Alembic)
+
+This project uses Alembic for schema migrations. Alembic is already configured to use the local SQLite database file `todosapp.db` (see `alembic.ini`) and `alembic/env.py` is set to use the project's SQLAlchemy metadata (`models.Base.metadata`) for autogeneration.
+
+Below are common commands you'll use when creating and applying migrations. Pick the set that matches how you manage your environment (Poetry or a normal venv / pip).
+
+Notes:
+- If autogenerate doesn't detect changes, make sure your models are imported and `target_metadata = models.Base.metadata` is set in `alembic/env.py` (this project already does this).
+- If you want Alembic to target a different database, edit the `sqlalchemy.url` value in `alembic.ini`.
+
+
+1. Create an autogenerate migration (will compare models -> metadata -> DB):
+
+```bash
+poetry run alembic revision --autogenerate -m "describe change here"
+```
+
+2. Apply migrations to the database:
+
+```bash
+poetry run alembic upgrade head
+```
+
+Using a normal venv / pip-installed environment (Windows)
+
+1. Create / activate your venv (example):
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\activate
+```
+
+2. Install requirements if not already installed:
+
+```powershell
+pip install -r requirements.txt
+```
+
+3. Create a migration with autogenerate:
+
+```powershell
+alembic revision --autogenerate -m "describe change here"
+```
+
+4. Apply migrations:
+
+```powershell
+alembic upgrade head
+```
+
+Useful Alembic commands
+
+- Show current revision applied to DB:
+
+```bash
+alembic current
+```
+
+- Show migration history:
+
+```bash
+alembic history --verbose
+```
+
+- Create an empty/manual migration (no autogenerate):
+
+```bash
+alembic revision -m "manual migration" --empty
+```
+
+- Roll back one revision:
+
+```bash
+alembic downgrade -1
+```
+
+Troubleshooting
+
+- If an autogenerate revision is empty but you expect changes: verify that the new/modified model is imported by `alembic/env.py` (the file already imports `models`) and that model classes are attached to `models.Base`.
+- If you need to target a different database for running migrations, update `sqlalchemy.url` in `alembic.ini` (for temporary overrides you can also set environment variables or modify `env.py` to read the DB URL from an env var).
+
+That's it — once you create revisions and run `alembic upgrade head`, your `todosapp.db` will be updated to match the SQLAlchemy models.

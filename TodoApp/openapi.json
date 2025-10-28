@@ -1,0 +1,361 @@
+{
+  openapi: "3.1.0",
+  info: {
+    title: "FastAPI",
+    version: "0.1.0"
+  },
+  paths: {
+    /auth/: {
+      post: {
+        tags: [
+          "auth"
+        ],
+        summary: "Create User",
+        operationId: "create_user_auth__post",
+        requestBody: {
+          content: {
+            application/json: {
+              schema: {
+                $ref: "#/components/schemas/CreateUserRequest"
+              }
+            }
+          },
+          required: true
+        },
+        responses: {
+          201: {
+            description: "Successful Response",
+            content: {
+              application/json: {
+                schema: {}
+              }
+            }
+          },
+          422: {
+            description: "Validation Error",
+            content: {
+              application/json: {
+                schema: {
+                  $ref: "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    /auth/token: {
+      post: {
+        tags: [
+          "auth"
+        ],
+        summary: "Login For Access Token",
+        operationId: "login_for_access_token_auth_token_post",
+        requestBody: {
+          content: {
+            application/x-www-form-urlencoded: {
+              schema: {
+                $ref: "#/components/schemas/Body_login_for_access_token_auth_token_post"
+              }
+            }
+          },
+          required: true
+        },
+        responses: {
+          200: {
+            description: "Successful Response",
+            content: {
+              application/json: {
+                schema: {
+                  $ref: "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          422: {
+            description: "Validation Error",
+            content: {
+              application/json: {
+                schema: {
+                  $ref: "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    /: {
+      get: {
+        tags: [
+          "todos"
+        ],
+        summary: "Read All",
+        operationId: "read_all__get",
+        responses: {
+          200: {
+            description: "Successful Response",
+            content: {
+              application/json: {
+                schema: {}
+              }
+            }
+          }
+        },
+        security: [
+          {
+            OAuth2PasswordBearer: []
+          }
+        ]
+      }
+    },
+    /todo/{
+  todo_id
+}: {get: {tags: [
+"todos"
+], summary: "Read Todo", operationId: "read_todo_todo__todo_id__get", security: [
+{OAuth2PasswordBearer: []
+}
+], parameters: [
+{name: "todo_id", in: "path", required: true, schema: {
+type: "integer",
+exclusiveMinimum: 0, title: "Todo Id"}}
+], responses: {
+200: {
+description: "Successful Response", content: {
+application/json: {
+schema: { }}}}, 422: {description: "Validation Error", content: {application/json: {schema: {$ref: "#/components/schemas/HTTPValidationError"}}}}}}, put: {
+tags: [
+"todos"
+], summary: "Update Todo", operationId: "update_todo_todo__todo_id__put", security: [
+{OAuth2PasswordBearer: []
+}
+], parameters: [
+{name: "todo_id", in: "path", required: true, schema: {
+type: "integer",
+exclusiveMinimum: 0, title: "Todo Id"}}
+], requestBody: {
+required: true, content: {application/json: {schema: {$ref: "#/components/schemas/TodoRequest"
+}}}}, responses: {204: {description: "Successful Response"}, 422: {description: "Validation Error", content: {
+application/json: {
+schema: {
+$ref: "#/components/schemas/HTTPValidationError"
+}
+}
+}
+}
+}
+}, delete: {tags: [
+"todos"
+], summary: "Delete Todo", operationId: "delete_todo_todo__todo_id__delete", security: [
+{OAuth2PasswordBearer: []
+}
+], parameters: [
+{name: "todo_id", in: "path", required: true, schema: {
+type: "integer",
+exclusiveMinimum: 0, title: "Todo Id"}}
+], responses: {
+204: {
+description: "Successful Response"
+}, 422: {description: "Validation Error", content: {
+application/json: {
+schema: {
+$ref: "#/components/schemas/HTTPValidationError"}}}}}}}, /todo: {
+post: {
+tags: [
+"todos"
+], summary: "Create Todo", operationId: "create_todo_todo_post", requestBody: {
+content: {
+application/json: {
+schema: {$ref: "#/components/schemas/TodoRequest"}}}, required: true}, responses: {201: {description: "Successful Response", content: {
+application/json: {
+schema: {
+}
+}
+}
+}, 422: {
+description: "Validation Error", content: {application/json: {
+schema: {$ref: "#/components/schemas/HTTPValidationError"}}}}
+}, security: [
+{OAuth2PasswordBearer: []
+}
+]
+}}, /admin/todo: {get: {tags: [
+"admin"
+], summary: "Read All", operationId: "read_all_admin_todo_get", responses: {
+200: {
+description: "Successful Response", content: {
+application/json: {
+schema: {
+}
+}
+}}}, security: [
+{OAuth2PasswordBearer: []
+}
+]
+}}, /admin/todo/{todo_id}: {delete: {
+tags: [
+"admin"
+], summary: "Delete Todo", operationId: "delete_todo_admin_todo__todo_id__delete", security: [
+{OAuth2PasswordBearer: []
+}
+], parameters: [
+{name: "todo_id", in: "path", required: true, schema: {
+type: "integer",
+exclusiveMinimum: 0, title: "Todo Id"}}
+], responses: {
+204: {
+description: "Successful Response"
+}, 422: {description: "Validation Error", content: {
+application/json: {
+schema: {
+$ref: "#/components/schemas/HTTPValidationError"}}}}}}}, /user/: {
+get: {
+tags: [
+"user"
+], summary: "Get User", operationId: "get_user_user__get", responses: {
+200: {
+description: "Successful Response", content: {
+application/json: {
+schema: {
+}
+}
+}}}, security: [
+{OAuth2PasswordBearer: []
+}
+]
+}}, /user/password: {put: {tags: [
+"user"
+], summary: "Change Password", operationId: "change_password_user_password_put", requestBody: {
+content: {
+application/json: {
+schema: {$ref: "#/components/schemas/UserVerification"}}}, required: true}, responses: {204: {description: "Successful Response"
+}, 422: {
+description: "Validation Error", content: {
+application/json: {
+schema: {
+$ref: "#/components/schemas/HTTPValidationError"}}}}}, security: [
+{OAuth2PasswordBearer: []
+}
+]
+}}, /user/phonenumber/{phone_number}: {put: {
+tags: [
+"user"
+], summary: "Change Phone Number", operationId: "change_phone_number_user_phonenumber__phone_number__put", security: [
+{OAuth2PasswordBearer: []
+}
+], parameters: [
+{name: "phone_number", in: "path", required: true, schema: {
+type: "string",
+title: "Phone Number"}}
+], responses: {
+204: {
+description: "Successful Response"
+}, 422: {description: "Validation Error", content: {
+application/json: {
+schema: {
+$ref: "#/components/schemas/HTTPValidationError"}}}}}}}},
+components: {schemas: {Body_login_for_access_token_auth_token_post: {properties: {
+grant_type: {
+anyOf: [
+{type: "string", pattern: "^password$"},
+{type: "null"}
+], title: "Grant Type"
+}, username: {
+type: "string", title: "Username"
+}, password: {type: "string", format: "password", title: "Password"
+}, scope: {
+type: "string", title: "Scope", default: ""
+},
+client_id: {anyOf: [
+{type: "string"}, {type: "null"
+}
+], title: "Client Id"
+}, client_secret: {
+anyOf: [
+{type: "string"}, {type: "null"
+}
+], format: "password", title: "Client Secret"
+}
+}, type: "object", required: [
+"username", "password"
+], title: "Body_login_for_access_token_auth_token_post"
+}, CreateUserRequest: {
+properties: {
+email: {
+type: "string", title: "Email"
+}, username: {
+type: "string", title: "Username"
+}, first_name: {
+type: "string", title: "First Name"
+}, last_name: {type: "string", title: "Last Name"},
+role: {type: "string", title: "Role"
+}, password: {type: "string", title: "Password"
+}, phone_number: {
+type: "string", title: "Phone Number"
+}
+}, type: "object", required: [
+"email", "username", "first_name", "last_name", "role",
+"password", "phone_number"
+], title: "CreateUserRequest"
+}, HTTPValidationError: {
+properties: {
+detail: {
+items: {
+$ref: "#/components/schemas/ValidationError"}, type: "array", title: "Detail"
+}}, type: "object", title: "HTTPValidationError"
+}, TodoRequest: {properties: {title: {type: "string", minLength: 3, title: "Title"
+}, description: {
+type: "string", maxLength: 100, minLength: 3, title: "Description"
+}, priority: {
+type: "integer", exclusiveMaximum: 6, exclusiveMinimum: 0, title: "Priority"
+}, compted: {
+type: "boolean", title: "Compted"
+}
+}, type: "object", required: [
+"title", "description", "priority", "compted"
+], title: "TodoRequest"
+}, Token: {
+properties: {
+access_token: {
+type: "string", title: "Access Token"
+}, token_type: {
+type: "string", title: "Token Type"
+}
+}, type: "object", required: [
+"access_token", "token_type"
+], title: "Token"
+}, UserVerification: {
+properties: {
+password: {
+type: "string", title: "Password"
+}, new_password: {
+type: "string", minLength: 4, title: "New Password"
+}
+}, type: "object", required: [
+"password", "new_password"
+], title: "UserVerification"
+}, ValidationError: {
+properties: {
+loc: {
+items: {
+anyOf: [
+{type: "string"}, {type: "integer"
+}
+]
+}, type: "array", title: "Location"}, msg: {
+type: "string", title: "Message"}, type: {type: "string",
+title: "Error Type"}}, type: "object",
+required: [
+"loc", "msg", "type"
+], title: "ValidationError"
+}
+}, securitySchemes: {
+OAuth2PasswordBearer: {type: "oauth2", flows: {
+password: {scopes: {}, tokenUrl: "auth/token"
+}
+}
+}
+}
+}
+}

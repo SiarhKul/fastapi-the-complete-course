@@ -41,7 +41,7 @@ Before you begin, make sure you have installed:
     Use `uvicorn` to run your FastAPI application.
     ```bash
     source fastapienv/Scripts/activate
-    uvicorn main:app --reload
+    uvicorn main:app --reload --port 8090
     ```
     * `main`: the `main.py` file.
     * `app`: the `app = FastAPI()` instance created in `main.py`.

@@ -54,13 +54,13 @@ async def read_todo(user: user_dependency, db: db_dependency, todo_id: int = Pat
     raise HTTPException(status_code=404, detail='Todo not found')
 
 
-@router.post('/todo', status_code=201)
+@router.post('/todo', status_code=status.HTTP_201_CREATED)
 async def create_todo(user: user_dependency, db: db_dependency, todo_request: TodoRequest):
 
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail='Authentication Failed')
 
-    todo_model = Todos(**todo_request.model_dump())
+    todo_model = Todos(**todo_request.model_dump(), owner_id=user.get('id'))
 
     db.add(todo_model)
     db.commit()

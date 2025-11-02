@@ -101,3 +101,23 @@ def test_create_todo_invalid_data():
     }
     response = client.post("/todo", json=request_data)
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+def test_update_todo(test_todo):
+    request_data = {
+        "title": "Updated title",
+        "description": "Updated description",
+        "priority": 1,
+        "compted": True
+    }
+    response = client.put("/todo/1", json=request_data)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    db = TestingSessionLocal()
+    model = db.query(Todos).filter(Todos.id ==1).first()
+    assert model.title == 'Updated title'
+    assert model.description == 'Updated description'
+    assert model.priority == 1
+    assert model.compted is True
+
+def test_delete_todo(test_todo):
+    response = client.delete("/todo/1")
+    assert response.status_code == status.HTTP_204_NO_CONTENT

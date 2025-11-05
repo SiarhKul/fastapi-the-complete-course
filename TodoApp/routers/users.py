@@ -44,19 +44,15 @@ async def get_user(user: user_dependency, db: db_dependency):
     return db.query(Users).filter(Users.id == user.get('id')).first()
 
 @router.put("/password", status_code=status.HTTP_204_NO_CONTENT)
-async def change_password(db: db_dependency, user: user_dependency,user_verification:UserVerification):
+async def change_password(user: user_dependency, db: db_dependency,
+                          user_verification: UserVerification):
     if user is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail= "Authentication Failed" )
+        raise HTTPException(status_code=401, detail='Authentication Failed')
+    user_model = db.query(Users).filter(Users.id == user.get('id')).first()
 
-    user_model: Users | None =  db.query(Users).filter(Users.id == user.get('id')).first()
-
-    is_password_checked = bcrypt_context.verify(user_verification.password, user_model.hashed_password)
-
-    if is_password_checked is None:
-        raise  HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Error on password change")
-
+    if not bcrypt_context.verify(user_verification.password, user_model.hashed_password):
+        raise HTTPException(status_code=401, detail='Error on password change')
     user_model.hashed_password = bcrypt_context.hash(user_verification.new_password)
-
     db.add(user_model)
     db.commit()
 
